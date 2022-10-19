@@ -1,9 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/database/database_helper.dart';
 import 'package:todo/model/todo_model.dart';
+import 'package:todo/screen/edit_screen.dart';
 
 class TodoScreen extends StatefulWidget {
   const TodoScreen({Key? key}) : super(key: key);
@@ -54,7 +54,113 @@ class _TodoScreenState extends State<TodoScreen> {
                       child: Card(
                         elevation: 5,
                         child: ListTile(
-                          trailing: Text("${snapshot.data![index].dateTime}"),
+                          onTap: () async{
+                   var data = await         Navigator.push(context, MaterialPageRoute(builder: (_)=> EditScreen(
+                              id: snapshot.data![index].id ,
+                              title:snapshot.data![index].title ,
+                              description:snapshot.data![index].description ,
+                            )));
+
+                   if(data!=null){
+                     if(data==true){
+                      setState(() {
+                        _dbHelper.getTodoModel();
+                      });
+                     }
+                   }
+                          },
+
+                       //    onTap: () {
+                       //
+                       //      // showDialog(context: context, builder: (_){
+                       //      //   return AlertDialog(
+                       //      //     title: Text("Delete!"),
+                       //      //   );
+                       //      // });
+                       //      //
+                       //      _dbHelper.delete(snapshot.data![index].id!);
+                       //      setState(() {
+                       //
+                       //      });
+                       //
+                       //
+                       // // var data = await    Navigator.push(context, MaterialPageRoute(builder: (_)=> EditScreen(
+                       // //        titleController: snapshot.data![index].title,
+                       // //        descriptionController: snapshot.data![index].description,
+                       // //        id: snapshot.data![index].id,
+                       // //      )));
+                       // // if(data!=null){
+                       // //   if(data==true){
+                       // //     setState(() {
+                       // //       _dbHelper.getTodoModel();
+                       // //     });
+                       // //   }
+                       // // }
+                       //    },
+                          trailing:  Column(
+                            children: [
+                              Text("${snapshot.data![index].dateTime}"),
+                              SizedBox(height: 10,),
+                              InkWell(
+                                onTap: (){
+
+                                  showDialog(context: context, builder: (context){
+                                    return AlertDialog(
+                                      title: Text("Delete"),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text("Are you sure want to delete?"),
+
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            children: [
+                                              ElevatedButton(
+
+                                                style: ElevatedButton.styleFrom(primary: Colors.red),
+
+                                                  onPressed: (){
+                                                _dbHelper.delete(snapshot.data![index].id!);
+                                                Navigator.pop(context);
+
+                                                setState(() {
+
+                                                });
+                                              }, child: Text("Yes")),
+                                              SizedBox(width: 20,),
+                                              ElevatedButton(onPressed: (){
+                                                Navigator.pop(context);
+                                              }, child: Text("No")),
+                                              SizedBox(width: 20,),
+
+                                            ],
+                                          ),
+
+                                        ],
+                                      ),
+                                    );
+                                  });
+
+                                },
+                                  child: Icon(Icons.delete,color: Colors.red,)),
+                            ],
+                          ),
+                          // Column(
+                          //   children: [
+                          //
+                          //     SizedBox(height: 10,),
+                          //
+                          //     // GestureDetector(
+                          //     //   onTap: (){
+                          //     //     setState(() {
+                          //     //       _dbHelper.deleteTodo(snapshot.data![index].id!);
+                          //     //
+                          //     //     });
+                          //     //   },
+                          //     //     child: Icon(Icons.delete,color: Colors.red,)),
+                          //   ],
+                          // ),
                           title: Text("${snapshot.data![index].title}"),
                           subtitle:
                               Text("${snapshot.data![index].description}"),

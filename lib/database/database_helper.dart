@@ -24,7 +24,6 @@ class DbHelper {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, TABLE_NAME);
     return openDatabase(path, version: 1, onCreate: _onCreate);
-
   }
 
   _onCreate(Database db, int version) async {
@@ -55,4 +54,36 @@ class DbHelper {
 
     return todoModels;
   }
+  
+  
+  updateTodo(TodoModel todoModel)async{
+    Database? database = await db;
+    return database!.update("todos",todoModel.toJson(),where: 'id = ?',whereArgs: [todoModel.id]);
+
+
+  }
+
+
+  delete(int id)async{
+    Database? database = await db;
+   return database!.delete("todos",where: 'id = ?',whereArgs: [id] );
+
+
+
+
+
+
+
+  }
+
+  // deleteTodo(int id) async {
+  //   Database? database = await db;
+  //   database!.delete("todos", where: 'id = ?', whereArgs: [id]);
+  // }
+  //
+  // updateTodo(TodoModel todoModel) async {
+  //   Database? database = await db;
+  //   database!.update("todos", todoModel.toJson(),
+  //       where: 'id = ?', whereArgs: [todoModel.id]);
+  // }
 }
